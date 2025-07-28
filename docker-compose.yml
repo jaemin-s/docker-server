@@ -1,0 +1,38 @@
+services:
+  backend:
+    image: spring-image
+    build:
+      context: ./backend-server
+    container_name: spring-container
+    ports:
+      - 8080:8080
+    networks:
+      - mynet1
+
+  front:
+    image: react-image
+    build:
+      context: ./front-server
+    container_name: react-container
+    ports:
+      - 3000:3000
+    volumes:
+      - ./front-server:/app
+      - /app/node_modules
+    networks:
+      - mynet1
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      - 80:80
+    depends_on:
+      - front
+      - backend
+    networks:
+      - mynet1
+
+networks:
+  mynet1:
